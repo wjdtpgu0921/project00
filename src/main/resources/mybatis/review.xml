@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper 
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<!-- fcate.xml과 연동되는 Spring interface "dev.mvc.fcate.CateDAOInter" 선언 --> 
+<mapper namespace="dev.mvc.review.ReviewDAOInter">
+
+  <insert id="create" parameterType="dev.mvc.review.ReviewVO">
+	  INSERT INTO review(reviewno, frno, memberno, rating, review_content)
+		VALUES(review_seq.nextval, #{frno}, #{memberno}, #{rating}, #{review_content})
+  </insert> 
+  
+  <select id="list_by_cateno_search_paging" resultType="dev.mvc.review.ReviewVO" parameterType="HashMap">
+		SELECT reviewno, frno, memberno, rating, review_content , nickname 
+		FROM (
+		SELECT r.reviewno, r.frno, r.memberno, r.rating, r.review_content , m.nickname, row_number() over (order by r.reviewno) r
+		FROM review r, member m
+		WHERE r.memberno = m.memberno AND frno=#{frno}
+		ORDER BY r.reviewno DESC
+		)
+    WHERE <![CDATA[ r >= #{start_num} AND r <= #{end_num} ]]>
+     
+    <!--  1 page: WHERE r >= 1 AND r <= 10; 
+            2 page: WHERE r >= 11 AND r <= 20;
+            3 page: WHERE r >= 21 AND r <= 30; -->
+     
+  </select>   
+  
+   <!-- 카테고리별 검색 레코드 갯수 -->
+  <select id="search_count" resultType="int" parameterType="HashMap">
+  SELECT COUNT(*) as cnt
+	FROM review
+	WHERE frno=#{frno}
+	
+  </select>
+  
+    <!-- 삭제 -->
+   <delete id="delete" parameterType="dev.mvc.review.ReviewVO">
+	  DELETE FROM review
+	  WHERE reviewno = #{reviewno}
+  </delete>
+  
+    <!-- 조회, id: read, 입력: cateno, 리턴: CateVO -->
+  <select id="read" resultType="dev.mvc.review.ReviewVO" parameterType="int">
+      SELECT reviewno, frno, memberno, rating, review_content
+      FROM review
+     WHERE reviewno=#{reviewno}
+  </select>  
+	  
+	  <!-- 평균, id: read, 입력: cateno, 리턴: CateVO -->
+	  <select id="rating_avg" resultType="double" parameterType="int">
+	  SELECT AVG(rating) as rating FROM review WHERE frno=#{frno}
+    </select>
+    
+</mapper>
+
+
+
+

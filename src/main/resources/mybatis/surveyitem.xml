@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.surveyitem.SurveyitemDAOInter"> 
+  <insert id="create" parameterType="dev.mvc.surveyitem.SurveyitemVO">
+    INSERT INTO surveyitem(surveyitemno, surveyno, item, cnt, rdate)
+    VALUES(surveyitem_seq.nextval, #{surveyno}, #{item}, #{cnt}, sysdate)
+  </insert>
+  
+  <!-- 특정 카테고리의 등록된 글목록 -->
+  <select id="list_by_surveyno" resultType="dev.mvc.surveyitem.SurveyitemVO" parameterType="int">
+    SELECT surveyitemno, surveyno, item, cnt, rdate
+    FROM surveyitem 
+    WHERE surveyno = #{surveyno}
+    ORDER BY surveyitemno DESC
+  </select>
+  
+  <update id="cnt_update" parameterType="int">
+    UPDATE surveyitem
+    SET cnt = cnt + 1
+    WHERE surveyitemno = #{surveyitemno}
+  </update>
+  
+  <!-- 조회, id: read, 입력: surveyitemno, 리턴: SurveyitemVO -->
+  <select id="read" resultType="dev.mvc.surveyitem.SurveyitemVO" parameterType="int">
+		SELECT surveyitemno, surveyno, item, cnt, rdate
+		FROM surveyitem
+		WHERE surveyitemno = #{surveyitemno}
+  </select>  
+  
+   <!-- 수정 처리 -->  
+   <update id="update" parameterType="dev.mvc.surveyitem.SurveyitemVO">
+		UPDATE surveyitem
+		SET surveyno=#{surveyno}, item=#{item}, cnt=#{cnt}, rdate=sysdate
+		WHERE surveyitemno=#{surveyitemno}
+   </update>  
+   
+  <!-- 삭제, return: int -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM surveyitem
+    WHERE surveyitemno = #{surveyitemno}
+  </delete>  
+  
+  <!-- 설문 번호에 해당하는 카운트의 합 -->
+  <select id="sum_cnt" parameterType="int" resultType="int">
+    SELECT SUM(cnt)
+    FROM surveyitem 
+    WHERE surveyno = #{surveyno}
+  </select>  
+     
+</mapper>

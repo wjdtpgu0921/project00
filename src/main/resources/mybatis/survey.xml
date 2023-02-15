@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.survey.SurveyDAOInter">
+  <insert id="create" parameterType="dev.mvc.survey.SurveyVO">
+    INSERT INTO survey(surveyno, topic, yn, rdate)
+    VALUES(survey_seq.nextval, #{topic}, #{yn}, sysdate)
+  </insert> 
+  
+  <!-- 
+  전체 목록, 출력 순서 반영
+  레코드 갯수 만큼 SurveyVO 객체를 만들어 ArrayList에 저장하여 리턴,
+  ArrayList<SurveyVO> list = new ArrayList<SurveyVO>(); 
+  -->
+  <select id="list_all" resultType="dev.mvc.survey.SurveyVO">
+		SELECT surveyno, topic, yn, rdate
+		FROM survey
+		ORDER BY rdate ASC
+  </select>
+  
+  <!-- 조회, id: read, 입력: surveyno, 리턴: SurveyVO -->
+  <select id="read" resultType="dev.mvc.survey.SurveyVO" parameterType="int">
+		SELECT surveyno, topic, yn, rdate
+		FROM survey
+		WHERE surveyno = #{surveyno}
+  </select>  
+
+  <!-- 수정 처리 -->  
+  <update id="update" parameterType="dev.mvc.survey.SurveyVO">
+		UPDATE survey
+		SET topic=#{topic}, yn=#{yn}, rdate=sysdate
+		WHERE surveyno=#{surveyno}
+  </update>  
+  
+   <!-- 삭제, return: int -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM survey
+    WHERE surveyno = #{surveyno}
+  </delete>  
+  
+</mapper>

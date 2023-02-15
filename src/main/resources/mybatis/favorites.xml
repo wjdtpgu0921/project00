@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+ 
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="dev.mvc.favorites.FavoritesDAOInter">
+ 
+  <insert id="create" parameterType="dev.mvc.favorites.FavoritesVO">
+    INSERT INTO favorites(frno, memberno)
+    VALUES(#{frno}, #{memberno})
+  </insert> 
+  
+  <!-- 조회, id: read, 입력: surveyno, 리턴: SurveyVO -->
+  <select id="read" resultType="dev.mvc.favorites.FavoritesVO" parameterType="int">
+		SELECT frno, memberno
+		FROM favorites
+		WHERE memberno = #{memberno}
+  </select>  
+  
+   <!-- 삭제, return: int -->
+  <delete id="delete" parameterType="int">
+    DELETE FROM favorites
+    WHERE frno = #{frno}
+  </delete>  
+  
+</mapper>
